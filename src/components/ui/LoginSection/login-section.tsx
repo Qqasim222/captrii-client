@@ -113,7 +113,7 @@ const LoginSection: React.FC<LoginSectionProps> = () => {
         </div>
         <AppleSignin
           authOptions={{
-            clientId: "com.localhost.captriiapp",
+            clientId: "com.localhost.captrii",
             scope: 'name email',
             redirectURI: "https://6428-43-251-254-65.ngrok-free.app",
             state: 'state', // optional, use this to prevent CSRF
