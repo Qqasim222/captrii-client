@@ -4,6 +4,21 @@ import { useMsal } from "@azure/msal-react";
 import { loginRequest } from "../../../config/authConfig";
 import useAuth from "../../../hooks/useAuth";
 import { LogoMini, EyeIcon, CrossEyeIcon } from "../Images/images";
+import AppleSignin from 'react-apple-signin-auth';
+
+// Define the type for the Apple Sign-In response
+interface AppleSignInResponse {
+  code: string;
+  id_token: string;
+  // Add more fields as necessary
+}
+
+// Define the type for the onSuccess handler parameter
+const handleCredentialResponse = (response: AppleSignInResponse) => {
+  console.log('Apple credential response:', response);
+  // Handle the response, e.g., send it to your backend for further processing
+};
+
 
 // TypeScript types for props and state.
 interface LoginSectionProps { }
@@ -63,7 +78,7 @@ const LoginSection: React.FC<LoginSectionProps> = () => {
     <div className="bg-gray-50 md:max-w-[46rem] pb-10 w-[90%] mx-5 flex justify-center">
       <div className="md:max-w-[28rem] w-[100%] bg-white mx-5 p-8 rounded-lg shadow-lg md:mt-12 mt-4 mb-4">
         <div className="flex justify-center mb-8">
-        <LogoMini />
+          <LogoMini />
         </div>
         <div
           id="microsoft-signin-button"
@@ -82,9 +97,20 @@ const LoginSection: React.FC<LoginSectionProps> = () => {
             <span>Continue with Microsoft</span>
           </button>
         </div>
-
-        <div id="apple-signin-button" className="text-sm mb-6">
+        <AppleSignin
+          authOptions={{
+            clientId: "com.localhost.captriiapp",
+            scope: 'name email',
+            redirectURI: "http://localhost:3000/auth/callback",
+            state: 'state', // optional, use this to prevent CSRF
+            nonce: 'nonce', // optional, use this to prevent replay attacks
+            usePopup: true, // or false defaults to false
+          }}
+          onSuccess={handleCredentialResponse}
+          onError={(error: Error) => console.error(error)}
+          render={(props: any) => <div id="apple-signin-button" className="text-sm mb-6">
             <button
+              {...props}
               id="apple-signin"
               className="social-button bg-white text-gray-700 rounded-full flex items-center justify-center p-2 w-full mb-2 border border-gray-300 cursor-pointer hover:bg-gray-100"
             >
@@ -95,12 +121,14 @@ const LoginSection: React.FC<LoginSectionProps> = () => {
               />
               <span>Continue with Apple</span>
             </button>
-        </div>
+          </div>}
+          uiType="light" // Add the required uiType prop
+        />
         <div className=" w-full">
           <div className="w-full" id="loginDiv"></div>
         </div>
 
-        {/* <div id="fake-button" className="text-sm" >
+             {/* <div id="fake-button" className="text-sm" >
           <button id="fake-google-signin-button" className="social-button bg-white text-gray-700 rounded-full flex items-center justify-center p-2 w-full mb-2 border border-gray-300 cursor-pointer hover:bg-gray-100">
             <img src="https://fonts.gstatic.com/s/i/productlogos/googleg/v6/24px.svg" alt="Google Icon" className="mr-2 w-6 h-6" />
             <span>Continue with Google</span>
@@ -229,7 +257,7 @@ const LoginSection: React.FC<LoginSectionProps> = () => {
                   {showPassword ? (
                     <CrossEyeIcon />
                   ) : (
-                  <EyeIcon />
+                    <EyeIcon />
                   )}
                 </button>
               </div>
