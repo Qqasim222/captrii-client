@@ -8,17 +8,20 @@ import AppleSignin from 'react-apple-signin-auth';
 
 // Define the type for the Apple Sign-In response
 interface AppleSignInResponse {
-  code: string;
-  id_token: string;
-  // Add more fields as necessary
+  authorization: {
+    code: string;
+    id_token: string;
+    state: string;
+  };
+  user: {
+    name: {
+      firstName: string;
+      lastName: string;
+    };
+    email: string;
+  };
 }
-
 // Define the type for the onSuccess handler parameter
-const handleCredentialResponse = (response: AppleSignInResponse) => {
-  console.log('Apple credential response:', response);
-  // Handle the response, e.g., send it to your backend for further processing
-};
-
 
 // TypeScript types for props and state.
 interface LoginSectionProps { }
@@ -29,19 +32,6 @@ const LoginSection: React.FC<LoginSectionProps> = () => {
   const [isGetQuestion, setIsGetQuestion] = useState<boolean>(false);
   const { instance } = useMsal();
   const { handleAuth } = useAuth(`${process.env.REACT_APP_API_URL}`);
-
-  const handleMicrosoftLogin = async () => {
-    try {
-      const response = await instance.loginPopup({
-        ...loginRequest,
-        prompt: "select_account",
-      });
-      await handleAuth({ credential: response.accessToken }, "microsoft");
-    } catch (e) {
-      console.error("Error during Microsoft login:", e);
-      toast.error("Microsoft login failed");
-    }
-  };
 
   useEffect(() => {
     if (window.google) {
@@ -63,6 +53,30 @@ const LoginSection: React.FC<LoginSectionProps> = () => {
     }
   }, [handleAuth]);
 
+
+  const handleMicrosoftLogin = async () => {
+    try {
+      const response = await instance.loginPopup({
+        ...loginRequest,
+        prompt: "select_account",
+      });
+      await handleAuth({ credential: response.accessToken }, "microsoft");
+    } catch (e) {
+      console.error("Error during Microsoft login:", e);
+      toast.error("Microsoft login failed");
+    }
+  };
+  const handleAppleLogin = async (response: AppleSignInResponse) => {
+    console.log('Apple credential response:', response);
+    // Handle the response, e.g., send it to your backend for further processing
+    try {
+      await handleAuth({ credential: response.authorization.id_token }, "apple");
+    } catch (e) {
+      console.error("Error during Apple login:", e);
+      toast.error("Apple login failed");
+    }
+  };
+  
 
   const togglePasswordVisibility = (): void => {
     setShowPassword(!showPassword);
@@ -106,7 +120,7 @@ const LoginSection: React.FC<LoginSectionProps> = () => {
             nonce: 'nonce', // optional, use this to prevent replay attacks
             usePopup: true, // or false defaults to false
           }}
-          onSuccess={handleCredentialResponse}
+          onSuccess={handleAppleLogin}
           onError={(error: Error) => console.error(error)}
           render={(props: any) => <div id="apple-signin-button" className="text-sm mb-6">
             <button
