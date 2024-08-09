@@ -101,7 +101,7 @@ const LoginSection: React.FC<LoginSectionProps> = () => {
           authOptions={{
             clientId: "com.localhost.captriiapp",
             scope: 'name email',
-            redirectURI: "http://localhost:3000/auth/callback",
+            redirectURI: "https://6428-43-251-254-65.ngrok-free.app",
             state: 'state', // optional, use this to prevent CSRF
             nonce: 'nonce', // optional, use this to prevent replay attacks
             usePopup: true, // or false defaults to false
