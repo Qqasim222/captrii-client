@@ -17,6 +17,7 @@ const useAuth = (url: string): UseAuthReturn => {
   const [error, setError] = useState("");
 
   const handleAuth = async (response: AuthResponse, provider: "google" | "microsoft"): Promise<void> => {
+    console.log('responseee', response)
     setLoading(true);
     try {
       const res = await fetch(url, {
