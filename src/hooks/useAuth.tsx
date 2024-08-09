@@ -9,14 +9,14 @@ interface AuthResponse {
 interface UseAuthReturn {
   loading: boolean;
   error: string;
-  handleAuth: (response: AuthResponse, provider: "google" | "microsoft") => Promise<void>;
+  handleAuth: (response: AuthResponse, provider: "google" | "microsoft" | "apple") => Promise<void>;
 }
 
 const useAuth = (url: string): UseAuthReturn => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const handleAuth = async (response: AuthResponse, provider: "google" | "microsoft"): Promise<void> => {
+  const handleAuth = async (response: AuthResponse, provider: "google" | "microsoft" | "apple"): Promise<void> => {
     console.log('responseee', response)
     setLoading(true);
     try {
