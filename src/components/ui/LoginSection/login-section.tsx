@@ -6,7 +6,6 @@ import useAuth from "../../../hooks/useAuth";
 import { LogoMini, EyeIcon, CrossEyeIcon } from "../Images/images";
 import AppleSignin from 'react-apple-signin-auth';
 
-// Define the type for the Apple Sign-In response
 interface AppleSignInResponse {
   authorization: {
     code: string;
@@ -21,9 +20,7 @@ interface AppleSignInResponse {
     email: string;
   };
 }
-// Define the type for the onSuccess handler parameter
 
-// TypeScript types for props and state.
 interface LoginSectionProps { }
 
 const LoginSection: React.FC<LoginSectionProps> = () => {
@@ -48,12 +45,11 @@ const LoginSection: React.FC<LoginSectionProps> = () => {
           shape: "pill",
           display: "block",
           width: "100%",
+          logo_alignment: "center"
         }
       );
     }
   }, [handleAuth]);
-
-
   const handleMicrosoftLogin = async () => {
     try {
       const response = await instance.loginPopup({
@@ -67,8 +63,6 @@ const LoginSection: React.FC<LoginSectionProps> = () => {
     }
   };
   const handleAppleLogin = async (response: AppleSignInResponse) => {
-    console.log('Apple credential response:', response);
-    // Handle the response, e.g., send it to your backend for further processing
     try {
       await handleAuth({ credential: response.authorization.id_token }, "apple");
     } catch (e) {
@@ -76,8 +70,6 @@ const LoginSection: React.FC<LoginSectionProps> = () => {
       toast.error("Apple login failed");
     }
   };
-  
-
   const togglePasswordVisibility = (): void => {
     setShowPassword(!showPassword);
   };
@@ -113,9 +105,9 @@ const LoginSection: React.FC<LoginSectionProps> = () => {
         </div>
         <AppleSignin
           authOptions={{
-            clientId: "com.localhost.captrii",
+            clientId: process.env.REACT_APP_APPLE_CLIENT as string,
             scope: 'name email',
-            redirectURI: "https://6428-43-251-254-65.ngrok-free.app",
+            redirectURI: `${process.env.REACT_APP_APPLE_REDIRECT_URL}`,
             state: 'state', // optional, use this to prevent CSRF
             nonce: 'nonce', // optional, use this to prevent replay attacks
             usePopup: true, // or false defaults to false
@@ -136,19 +128,11 @@ const LoginSection: React.FC<LoginSectionProps> = () => {
               <span>Continue with Apple</span>
             </button>
           </div>}
-          uiType="light" // Add the required uiType prop
+          uiType="light"
         />
-        <div className=" w-full">
+        <div className=" w-full mb-2">
           <div className="w-full" id="loginDiv"></div>
         </div>
-
-             {/* <div id="fake-button" className="text-sm" >
-          <button id="fake-google-signin-button" className="social-button bg-white text-gray-700 rounded-full flex items-center justify-center p-2 w-full mb-2 border border-gray-300 cursor-pointer hover:bg-gray-100">
-            <img src="https://fonts.gstatic.com/s/i/productlogos/googleg/v6/24px.svg" alt="Google Icon" className="mr-2 w-6 h-6" />
-            <span>Continue with Google</span>
-          </button>
-        </div> */}
-
         <div className="flex justify-center items-center mb-4">
           <hr className="border-t-1 border-gray-300 w-[50%] mr-3"></hr>
           <span>OR</span>
@@ -198,15 +182,7 @@ const LoginSection: React.FC<LoginSectionProps> = () => {
               />
               <br />
               <div className="p-2"></div>
-              {/* <button
-                                className="bg-purple-400 p-2 mb-10 w-full text-white py-2 px-4 rounded-md shadow-sm hover:bg-indigo-600"
-                                type="submit"
-                                id="signupButton"
-                            >
-                                Continue Sign Up
-                            </button> */}
             </form>
-
             {isGetQuestion ? (
               <>
                 <p id="signupMessage"></p>
