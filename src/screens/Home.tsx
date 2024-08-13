@@ -12,6 +12,7 @@ const Home: React.FC<HomeProps> = ({ user }) => {
   const logout = () => {
     sessionStorage.removeItem("google_user");
     sessionStorage.removeItem("microsoft_user");
+    sessionStorage.removeItem("apple_user");
     window.location.reload();
   };
 
