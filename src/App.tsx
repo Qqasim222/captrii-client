@@ -16,6 +16,7 @@ const App: React.FC = () => {
   useEffect(() => {
     const theUser = sessionStorage.getItem("google_user");
     const msUser = sessionStorage.getItem("microsoft_user");
+    const appleUser = sessionStorage.getItem("apple_user");
 
     if (theUser && !theUser.includes("undefined")) {
       setUser(JSON.parse(theUser));
@@ -23,6 +24,10 @@ const App: React.FC = () => {
 
     if (msUser && !msUser.includes("undefined")) {
       setUser(JSON.parse(msUser));
+    }
+
+    if (appleUser && !appleUser.includes("undefined")) {
+      setUser(JSON.parse(appleUser));
     }
   }, []);
 
